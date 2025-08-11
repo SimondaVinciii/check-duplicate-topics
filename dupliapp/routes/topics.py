@@ -5,6 +5,7 @@ from flasgger import swag_from
 from dupliapp.config import settings
 from dupliapp.services.topic_service import TopicsService
 
+# Tạo blueprint cho routes quản lý đề tài
 bp = Blueprint("topics", __name__, url_prefix="/topics")
 
 @bp.post("/upsert")
@@ -92,7 +93,7 @@ bp = Blueprint("topics", __name__, url_prefix="/topics")
     }
 })
 def upsert():
-    # Upsert 1 topicVersion
+    # Thêm hoặc cập nhật một đề tài với vector embedding
     data = request.get_json(force=True)
     svc = TopicsService()
     svc.upsert_one(data)
@@ -192,7 +193,7 @@ def upsert():
     }
 })
 def bulk_upsert():
-    # Upsert nhiều topicVersions một lần
+    # Thêm hoặc cập nhật nhiều đề tài cùng lúc (hiệu quả hơn)
     data = request.get_json(force=True)
     items = data.get("items") if isinstance(data, dict) else data
     svc = TopicsService()
@@ -324,7 +325,8 @@ def bulk_upsert():
     }
 })
 def search():
-    # Tìm trùng lặp. Nếu có hit >= threshold -> passed=false -> FE chặn submit
+    # Tìm kiếm đề tài trùng lặp dựa trên độ tương tự ngữ nghĩa
+    # Nếu có kết quả >= threshold -> passed=false -> Frontend chặn submit
     data = request.get_json(force=True)
     svc = TopicsService()
     res = svc.search(

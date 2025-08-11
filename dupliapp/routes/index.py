@@ -1,9 +1,10 @@
 ﻿# -*- coding: utf-8 -*-
-# Build lại index từ SQL Server (tùy chọn): /index/topics
+# Route xây dựng lại index từ SQL Server (tùy chọn)
 from flask import Blueprint, request, jsonify
 from flasgger import swag_from
 from dupliapp.services.index_service import IndexService
 
+# Tạo blueprint cho routes xây dựng chỉ mục
 bp = Blueprint("index", __name__, url_prefix="/index")
 
 @bp.post("/topics")
@@ -38,6 +39,54 @@ bp = Blueprint("index", __name__, url_prefix="/index")
                         'type': 'integer',
                         'description': 'Số lượng đề tài được lập chỉ mục thành công',
                         'example': 1500
+                    },
+                    'total_topics': {
+                        'type': 'integer',
+                        'description': 'Tổng số đề tài được xử lý',
+                        'example': 1500
+                    },
+                    'topics': {
+                        'type': 'array',
+                        'description': 'Danh sách các đề tài đã được thêm vào ChromaDB',
+                        'items': {
+                            'type': 'object',
+                            'properties': {
+                                'topicId': {
+                                    'type': 'string',
+                                    'description': 'Định danh duy nhất cho đề tài',
+                                    'example': 'T001'
+                                },
+                                'topicVersionId': {
+                                    'type': 'string',
+                                    'description': 'Định danh duy nhất cho phiên bản đề tài',
+                                    'example': 'TV001'
+                                },
+                                'title': {
+                                    'type': 'string',
+                                    'description': 'Tiêu đề đề tài',
+                                    'example': 'Ứng Dụng Machine Learning Trong Y Tế'
+                                },
+                                'description': {
+                                    'type': 'string',
+                                    'description': 'Mô tả đề tài (đã cắt ngắn nếu quá dài)',
+                                    'example': 'Nghiên cứu về việc áp dụng kỹ thuật ML để cải thiện kết quả y tế...'
+                                }
+                            }
+                        },
+                        'example': [
+                            {
+                                'topicId': 'T001',
+                                'topicVersionId': 'TV001',
+                                'title': 'Ứng Dụng Machine Learning Trong Y Tế',
+                                'description': 'Nghiên cứu về việc áp dụng kỹ thuật ML để cải thiện kết quả y tế...'
+                            },
+                            {
+                                'topicId': 'T002',
+                                'topicVersionId': 'TV002',
+                                'title': 'Phát Triển Hệ Thống Quản Lý Sinh Viên',
+                                'description': 'Xây dựng hệ thống quản lý thông tin sinh viên sử dụng công nghệ web...'
+                            }
+                        ]
                     }
                 }
             }
@@ -54,8 +103,10 @@ bp = Blueprint("index", __name__, url_prefix="/index")
     }
 })
 def index_topics():
+    # Xây dựng lại chỉ mục vector bằng cách lấy đề tài từ SQL Server
+    # Hữu ích cho thiết lập ban đầu hoặc đồng bộ hóa dữ liệu
     body = request.get_json(silent=True) or {}
     limit = body.get("limit")
     svc = IndexService()
-    n = svc.build_from_sql(limit=limit)
-    return jsonify({"indexed": n})
+    result = svc.build_from_sql(limit=limit)
+    return jsonify(result)

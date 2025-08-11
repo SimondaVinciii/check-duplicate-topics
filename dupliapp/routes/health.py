@@ -1,9 +1,10 @@
 ﻿# -*- coding: utf-8 -*-
-# Route meta: /, /health
+# Route kiểm tra sức khỏe dịch vụ và thông tin cơ bản
 from flask import Blueprint, jsonify
 from flasgger import swag_from
 from dupliapp.services.topic_service import TopicsService
 
+# Tạo blueprint cho routes kiểm tra sức khỏe
 bp = Blueprint("health", __name__)
 
 @bp.get("/")
@@ -30,7 +31,7 @@ bp = Blueprint("health", __name__)
     }
 })
 def root():
-    # Trang chủ đơn giản và list các route hữu ích
+    # Trang chủ đơn giản và danh sách các route hữu ích
     return jsonify({
         "service": "duplicate-service-flask",
         "version": "2.0.0",
@@ -56,7 +57,7 @@ def root():
     }
 })
 def health():
-    # Health check + số vector đang có
+    # Kiểm tra sức khỏe dịch vụ + số lượng vector đang có trong database
     vectors = TopicsService.count_vectors()
     return jsonify({
         "status": "ok",

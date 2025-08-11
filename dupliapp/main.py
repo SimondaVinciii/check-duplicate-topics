@@ -1,5 +1,8 @@
 ﻿# -*- coding: utf-8 -*-
-# Khởi tạo Flask dupliapp, đăng ký Swagger UI và các route (Clean Architecture)
+"""
+Factory function để khởi tạo Flask application
+File này tạo và cấu hình ứng dụng Flask với tất cả các thành phần cần thiết
+"""
 from flask import Flask
 from flask_cors import CORS
 from flasgger import Swagger
@@ -9,18 +12,32 @@ from dupliapp.routes.topics import bp as topics_bp
 from dupliapp.routes.index import bp as index_bp
 
 def create_app() -> Flask:
+    """
+    Factory function để tạo và cấu hình Flask application
+    
+    Returns:
+        Flask app đã được cấu hình đầy đủ với:
+        - CORS support
+        - Swagger UI documentation
+        - Tất cả API routes đã đăng ký
+    """
+    # Tạo Flask app instance
     app = Flask(__name__)
+    
+    # Cấu hình CORS để cho phép frontend gọi API
+    # supports_credentials=True cho phép gửi cookies/headers xác thực
     CORS(app, supports_credentials=True)
     
     # Cấu hình Swagger với tài liệu chi tiết
+    # Swagger UI sẽ có sẵn tại /apidocs/
     swagger_config = {
         "headers": [],
         "specs": [
             {
                 "endpoint": 'apispec_1',
                 "route": '/apispec_1.json',
-                "rule_filter": lambda rule: True,
-                "model_filter": lambda tag: True,
+                "rule_filter": lambda rule: True,  # Bao gồm tất cả routes
+                "model_filter": lambda tag: True,  # Bao gồm tất cả models
             }
         ],
         "static_url_path": "/flasgger_static",
@@ -28,6 +45,7 @@ def create_app() -> Flask:
         "specs_route": "/apidocs/"
     }
     
+    # Template cho Swagger documentation
     swagger_template = {
         "swagger": "2.0",
         "info": {
@@ -35,7 +53,8 @@ def create_app() -> Flask:
             "description": """
             ## Tài Liệu API Dịch Vụ Kiểm Tra Trùng Lặp
             
-            Dịch vụ này cung cấp chức năng phát hiện trùng lặp cho các đề tài nghiên cứu sử dụng vector embeddings và tìm kiếm tương tự.
+            Dịch vụ này cung cấp chức năng phát hiện trùng lặp cho các đề tài nghiên cứu 
+            sử dụng vector embeddings và tìm kiếm tương tự.
             
             ### Tính Năng Chính:
             - **Quản Lý Đề Tài**: Thêm và cập nhật đề tài nghiên cứu với vector embeddings
@@ -88,10 +107,14 @@ def create_app() -> Flask:
         ]
     }
     
+    # Khởi tạo Swagger với cấu hình và template
     Swagger(app, config=swagger_config, template=swagger_template)
     
-    app.register_blueprint(health_bp)
-    app.register_blueprint(chroma_bp)
-    app.register_blueprint(topics_bp)
-    app.register_blueprint(index_bp)
+    # Đăng ký các blueprint (modules) cho ứng dụng
+    # Mỗi blueprint chứa một nhóm routes liên quan
+    app.register_blueprint(health_bp)    # Routes kiểm tra sức khỏe
+    app.register_blueprint(chroma_bp)    # Routes thống kê ChromaDB
+    app.register_blueprint(topics_bp)    # Routes quản lý đề tài
+    app.register_blueprint(index_bp)     # Routes xây dựng chỉ mục
+    
     return app
