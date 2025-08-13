@@ -82,9 +82,9 @@ def create_app() -> Flask:
                 "url": "https://opensource.org/licenses/MIT"
             }
         },
-        "host": "localhost:8008",
-        "basePath": "/",
-        "schemes": ["http", "https"],
+        #"host": "localhost:8008",
+        #"basePath": "/",
+       # "schemes": ["http", "https"],
         "consumes": ["application/json"],
         "produces": ["application/json"],
         "tags": [
