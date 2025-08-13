@@ -8,6 +8,7 @@ Dịch vụ kiểm tra trùng lặp đề tài nghiên cứu sử dụng vector 
 - **Phát Hiện Trùng Lặp**: Tìm kiếm đề tài tương tự sử dụng độ tương tự ngữ nghĩa
 - **Thao Tác Hàng Loạt**: Xử lý nhiều đề tài một cách hiệu quả
 - **Cơ Sở Dữ Liệu Vector**: Được hỗ trợ bởi cơ sở dữ liệu vector Chroma
+- **Đa Dạng Embedding Models**: Hỗ trợ cả Sentence Transformers và Gemini Embeddings
 - **API Documentation**: Swagger UI tích hợp
 
 ## Cài Đặt
@@ -41,6 +42,22 @@ cp .env.example .env
 ```bash
 python run.py
 ```
+
+## Embedding Models
+
+Ứng dụng hỗ trợ 2 loại embedding models:
+
+### Sentence Transformers (Mặc định)
+- Model: `all-mpnet-base-v2`
+- Chạy offline, không cần API key
+- Cấu hình: `EMBEDDING_TYPE=sentence_transformers`
+
+### Gemini Embeddings
+- Model: `gemini-embedding-001`
+- Cần Gemini API key
+- Cấu hình: `EMBEDDING_TYPE=gemini` và `GEMINI_API_KEY=your-key`
+
+Xem chi tiết trong [EMBEDDING_GUIDE.md](EMBEDDING_GUIDE.md)
 
 ## API Documentation
 

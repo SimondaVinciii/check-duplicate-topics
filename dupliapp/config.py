@@ -36,9 +36,15 @@ class Settings:
     CHROMA_CLOUD_TENANT: str = os.getenv("CHROMA_CLOUD_TENANT", "")
     CHROMA_CLOUD_DATABASE: str = os.getenv("CHROMA_CLOUD_DATABASE", "")
     
+    # Loại model embedding: "sentence_transformers" hoặc "gemini"
+    EMBEDDING_TYPE: str = os.getenv("EMBEDDING_TYPE", "sentence_transformers")
+    
     # Tên model embedding để chuyển đổi text thành vector
-    # all-MiniLM-L6-v2 là model nhỏ gọn, nhanh và hiệu quả cho tiếng Việt
-    MODEL_NAME: str = os.getenv("MODEL_NAME", "sentence-transformers/all-MiniLM-L6-v2")
+    # all-mpnet-base-v2 là model chất lượng cao cho sentence transformers
+    MODEL_NAME: str = os.getenv("MODEL_NAME", "sentence-transformers/all-mpnet-base-v2")
+    
+    # Gemini API Key (cần thiết khi sử dụng gemini-embedding-001)
+    GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
     
     # Host và port để chạy Flask server
     HOST: str = os.getenv("HOST", "0.0.0.0")  # 0.0.0.0 = lắng nghe tất cả interfaces
